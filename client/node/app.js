@@ -1,5 +1,3 @@
-
-
 var http = require('http');
 
 //wrapper
@@ -22,11 +20,9 @@ Things.prototype = {
     });
   },
   _check:function(){
-    //console.log("_check");
     var self = this;
     this._send("check/event",(function(evt){
       if(evt){
-        //console.log(evt);
         if(typeof this.oneventemit[evt.name] === "function"){
           this.oneventemit[evt.name](evt.data);
         }else{
@@ -36,20 +32,6 @@ Things.prototype = {
     }).bind(self));
   },
   _send:function(cmd,func){
-    /*
-    //console.log("send"+this.uri);
-    //var xhr = new XMLHttpRequest({mozSystem: true});
-    var xhr = new XMLHttpRequest();
-    //xhr.open('GET', url, true);
-    xhr.open('GET', this.uri + cmd, true);
-    xhr.onreadystatechange = function(){
-      if (xhr.readyState === 4 && xhr.status === 200){
-        //console.log(xhr.responseText);
-        func(JSON.parse(xhr.responseText));
-      }
-    };
-    xhr.send(null);
-    */
     var url = this.uri + cmd;
     http.get(url, function(res) {
       var body = '';
@@ -58,7 +40,6 @@ Things.prototype = {
         body += chunk;
       });
       res.on('end', function() {
-        //console.log(body);
         func(JSON.parse(body));
       });
     }).on('error', function(e) {
@@ -83,15 +64,14 @@ WoT.prototype = {
 */
  
 var wot = new WoT();
-//client side, connect to a lightbulb by its URI
+//connect to a light sensor by its URI
 var thing = wot.connect("http://172.16.0.212:8001/");
 
-//client side, thing is a remote lightbulb
+//thing is a remote light sensor
 thing.subscribe('stateChanged',function(evt) {
   debug("sensor " + evt.src + " changed state at " + evt.time + " to " + evt.payload.brightness);
 });
 
-//client side, thing is a remote lightbulb
 thing.get('brightness')
    .then(function(res) {
      debug("current brightness is " + res.value );
@@ -100,7 +80,6 @@ thing.get('brightness')
 
 function debug(mes){
   console.log(mes);
-  //document.getElementById("debug").innerHTML = mes;
 }
 
 
